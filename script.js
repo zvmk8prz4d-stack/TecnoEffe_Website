@@ -65,30 +65,13 @@
   });
 
   const morphBox = document.querySelector('.hero-morph');
-  const morphPath = morphBox?.querySelector('path');
-  const morphLabel = morphBox?.querySelector('span');
-  if (morphPath && morphLabel && !reducedMotion) {
-    const labels = ['Finestra', 'Porta', 'Scorrevole', 'Portoncino'];
-    const shapes = [
-      'M20 18 L100 18 L100 136 L20 136 Z M60 18 L60 136 M20 77 L100 77 M26 24 L94 24',
-      'M35 12 L85 12 L85 138 L35 138 Z M39 16 L81 16 M73 73 L79 73 M39 134 L81 134',
-      'M15 30 L105 30 L105 120 L15 120 Z M58 30 L58 120 M66 30 L66 120 M49 73 L55 73',
-      'M30 10 L90 10 L90 140 L30 140 Z M62 27 L80 27 M62 52 L80 52 M45 67 L45 82',
-    ];
-    const animation = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
-    animation.setAttribute('attributeName', 'd');
-    animation.setAttribute('dur', '15.2s');
-    animation.setAttribute('repeatCount', 'indefinite');
-    animation.setAttribute('calcMode', 'spline');
-    animation.setAttribute('keyTimes', '0;0.15;0.25;0.4;0.5;0.65;0.75;0.9;1');
-    animation.setAttribute('keySplines', '.87 0 .13 1;.87 0 .13 1;.87 0 .13 1;.87 0 .13 1;.87 0 .13 1;.87 0 .13 1;.87 0 .13 1;.87 0 .13 1');
-    animation.setAttribute('values', shapes[0] + ';' + shapes[0] + ';' + shapes[1] + ';' + shapes[1] + ';' + shapes[2] + ';' + shapes[2] + ';' + shapes[3] + ';' + shapes[3] + ';' + shapes[0]);
-    morphPath.append(animation);
+  const morphIcons = [...(morphBox?.querySelectorAll('.hero-morph-stage svg') || [])];
+  if (morphIcons.length > 1 && !reducedMotion) {
     let morphActive = 0;
     setInterval(() => {
-      morphActive = (morphActive + 1) % labels.length;
-      morphLabel.textContent = labels[morphActive];
-    }, 3800);
+      morphActive = (morphActive + 1) % morphIcons.length;
+      morphIcons.forEach((icon, index) => icon.classList.toggle('active', index === morphActive));
+    }, 2600);
   }
 
   document.querySelectorAll('.video-card').forEach((card) => {
