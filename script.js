@@ -67,7 +67,7 @@
   const morphBox = document.querySelector('.hero-morph');
   const morphIcon = morphBox?.querySelector('.hero-morph-stage svg');
   const morphPath = morphIcon?.querySelector('path');
-  if (morphIcon && morphPath && !reducedMotion) {
+  if (morphIcon && morphPath) {
     const shapes = [
       'M20 18 L100 18 L100 136 L20 136 Z M60 18 L60 136 M20 77 L100 77 M26 24 L94 24',
       'M35 12 L85 12 L85 138 L35 138 Z M39 16 L81 16 M73 73 L79 73 M39 134 L81 134',

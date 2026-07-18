@@ -397,6 +397,7 @@ footer { color: white; background: var(--forest-dark); }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+  .hero-morph svg.morph-swap { animation-duration: 1.05s !important; }
   .hero-image { transform: none !important; }
   [data-reveal] { opacity: 1; transform: none; }
 }
