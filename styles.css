@@ -98,8 +98,8 @@ em { font-weight: 400; }
 .hero-meta span::before { content: ''; width: 5px; height: 5px; border: 1px solid currentColor; border-radius: 50%; }
 .hero-morph { position: absolute; left: 44px; top: 116px; z-index: 3; width: 184px; display: flex; flex-direction: column; align-items: center; color: rgba(255,255,255,.94); pointer-events: none; }
 .hero-morph-stage { position: relative; width: clamp(116px, 9.6vw, 156px); aspect-ratio: 120 / 150; filter: drop-shadow(0 7px 18px rgba(3,18,12,.28)); }
-.hero-morph svg { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transform: scale(.84) rotate(-2deg); transition: opacity .75s var(--ease), transform 1.05s var(--ease); }
-.hero-morph svg.active { opacity: 1; transform: scale(1) rotate(0); }
+.hero-morph svg { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 1; }
+.hero-morph svg.morph-swap { animation: morphSwap 1.05s var(--ease) both; }
 .scroll-cue { position: absolute; left: 50%; bottom: 28px; z-index: 3; display: flex; flex-direction: column; align-items: center; gap: 10px; color: rgba(255,255,255,.8); font-size: 9px; letter-spacing: .25em; text-transform: uppercase; transform: translateX(-50%); }
 .scroll-cue i { position: relative; width: 1px; height: 42px; overflow: hidden; background: rgba(255,255,255,.26); }
 .scroll-cue i::after { content: ''; position: absolute; inset: -100% 0 auto; height: 100%; background: white; animation: scrollLine 2s ease-in-out infinite; }
@@ -108,6 +108,7 @@ em { font-weight: 400; }
 @keyframes heroEnter { to { opacity: 1; transform: none; } }
 @keyframes heroFocus { from { filter: saturate(.78); transform: translate3d(0,0,0) scale(1.07); } to { filter: saturate(1); transform: translate3d(0,var(--hero-shift),0) scale(1.02); } }
 @keyframes scrollLine { 0% { transform: translateY(0); } 55%, 100% { transform: translateY(200%); } }
+@keyframes morphSwap { from { opacity: 0; transform: scale(.82) rotate(-3deg); } to { opacity: 1; transform: scale(1) rotate(0); } }
 
 /* Intro */
 .intro { padding: clamp(110px, 12vw, 190px) 0; background: var(--cream); }

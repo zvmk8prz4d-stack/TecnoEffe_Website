@@ -65,12 +65,22 @@
   });
 
   const morphBox = document.querySelector('.hero-morph');
-  const morphIcons = [...(morphBox?.querySelectorAll('.hero-morph-stage svg') || [])];
-  if (morphIcons.length > 1 && !reducedMotion) {
+  const morphIcon = morphBox?.querySelector('.hero-morph-stage svg');
+  const morphPath = morphIcon?.querySelector('path');
+  if (morphIcon && morphPath && !reducedMotion) {
+    const shapes = [
+      'M20 18 L100 18 L100 136 L20 136 Z M60 18 L60 136 M20 77 L100 77 M26 24 L94 24',
+      'M35 12 L85 12 L85 138 L35 138 Z M39 16 L81 16 M73 73 L79 73 M39 134 L81 134',
+      'M15 30 L105 30 L105 120 L15 120 Z M58 30 L58 120 M66 30 L66 120 M49 73 L55 73',
+      'M30 10 L90 10 L90 140 L30 140 Z M62 27 L80 27 M62 52 L80 52 M45 67 L45 82',
+    ];
     let morphActive = 0;
     setInterval(() => {
-      morphActive = (morphActive + 1) % morphIcons.length;
-      morphIcons.forEach((icon, index) => icon.classList.toggle('active', index === morphActive));
+      morphActive = (morphActive + 1) % shapes.length;
+      morphIcon.classList.remove('morph-swap');
+      morphPath.setAttribute('d', shapes[morphActive]);
+      void morphIcon.getBoundingClientRect();
+      morphIcon.classList.add('morph-swap');
     }, 2600);
   }
 
