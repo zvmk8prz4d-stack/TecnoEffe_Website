@@ -37,6 +37,23 @@
   toTop?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: reducedMotion ? 'auto' : 'smooth' }));
 
   const heroImages = [...document.querySelectorAll('.hero-slides .hero-image')];
+
+  // Gli slide sono sovrapposti dentro il viewport: loading="lazy" non li
+  // rimanderebbe. Il src arriva da data-src quando la pagina e' pronta,
+  // cosi' all'apertura si scarica solo il primo.
+  const caricaSlideDifferiti = () => {
+    heroImages.forEach((img) => {
+      if (img.dataset.src) {
+        // Va tolto prima del src: assegnarlo a un'immagine nata lazy e senza
+        // src non fa ripartire il caricamento, il browser l'ha gia' valutata.
+        img.loading = 'eager';
+        img.src = img.dataset.src;
+        delete img.dataset.src;
+      }
+    });
+  };
+  if (document.readyState === 'complete') caricaSlideDifferiti();
+  else window.addEventListener('load', caricaSlideDifferiti, { once: true });
   if (heroImages.length > 1) {
     let heroActive = 0;
     setInterval(() => {
