@@ -36,6 +36,17 @@
   window.addEventListener('scroll', onScroll, { passive: true });
   toTop?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: reducedMotion ? 'auto' : 'smooth' }));
 
+  const heroImages = [...document.querySelectorAll('.hero-slides .hero-image')];
+  if (heroImages.length > 1) {
+    let heroActive = 0;
+    setInterval(() => {
+      if (document.hidden) return;
+      heroImages[heroActive].classList.remove('active');
+      heroActive = (heroActive + 1) % heroImages.length;
+      heroImages[heroActive].classList.add('active');
+    }, 5000);
+  }
+
   const revealObserver = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
