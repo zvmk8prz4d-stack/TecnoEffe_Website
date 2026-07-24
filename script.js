@@ -24,6 +24,13 @@
   });
   menu?.querySelectorAll('a').forEach((link) => link.addEventListener('click', closeMenu));
 
+  const phoneLandscape = window.matchMedia('(orientation: landscape) and (max-height: 600px) and (max-width: 1000px)');
+  const closeLandscapeMenu = () => {
+    if (phoneLandscape.matches) closeMenu();
+  };
+  closeLandscapeMenu();
+  phoneLandscape.addEventListener('change', closeLandscapeMenu);
+
   const onScroll = () => {
     const top = window.scrollY;
     const max = document.documentElement.scrollHeight - window.innerHeight;
