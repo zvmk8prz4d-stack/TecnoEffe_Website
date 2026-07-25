@@ -385,7 +385,7 @@ footer { color: white; background: var(--forest-dark); }
   .contacts-grid { grid-template-columns: 1fr; gap: 38px; margin-top: 65px; }
   .contacts-grid p, .contacts-grid a { font-size: 16px; }
   .footer-inner { grid-template-columns: 1fr auto; padding: 28px 0; }
-  .footer-inner p { grid-column: 1 / -1; grid-row: 2; margin-top: 20px; }
+  .footer-inner p { grid-column: 1 / -1; grid-row: 2; margin-top: 20px; padding-inline: 10px; font-size: 12px; line-height: 1.5; }
   .footer-inner > div { grid-column: 2; }
   .footer-inner > div a:first-child { display: none; }
   .whatsapp { display: none; }
