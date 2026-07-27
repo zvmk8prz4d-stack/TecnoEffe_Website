@@ -44,38 +44,18 @@
   toTop?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: reducedMotion ? 'auto' : 'smooth' }));
 
   const heroImages = [...document.querySelectorAll('.hero-slides .hero-image')];
-  const heroBackdrops = heroImages.map((img, index) => {
-    img.classList.add(`hero-image-${index + 1}`);
-    if (index === 0) img.classList.add('hero-image-initial');
-
-    const backdrop = img.cloneNode(false);
-    backdrop.className = 'hero-backdrop';
-    backdrop.removeAttribute('id');
-    backdrop.removeAttribute('fetchpriority');
-    backdrop.setAttribute('aria-hidden', 'true');
-    backdrop.classList.toggle('active', img.classList.contains('active'));
-    img.parentElement?.insertBefore(backdrop, img);
-    return backdrop;
-  });
 
   // Gli slide sono sovrapposti dentro il viewport: loading="lazy" non li
   // rimanderebbe. Il src arriva da data-src quando la pagina e' pronta,
   // cosi' all'apertura si scarica solo il primo.
   const caricaSlideDifferiti = () => {
-    heroImages.forEach((img, index) => {
+    heroImages.forEach((img) => {
       if (img.dataset.src) {
         // Va tolto prima del src: assegnarlo a un'immagine nata lazy e senza
         // src non fa ripartire il caricamento, il browser l'ha gia' valutata.
         img.loading = 'eager';
         img.src = img.dataset.src;
         delete img.dataset.src;
-      }
-      const backdrop = heroBackdrops[index];
-      const source = img.currentSrc || img.src;
-      if (backdrop && source) {
-        backdrop.loading = 'eager';
-        backdrop.src = source;
-        delete backdrop.dataset.src;
       }
     });
   };
@@ -86,10 +66,8 @@
     setInterval(() => {
       if (document.hidden) return;
       heroImages[heroActive].classList.remove('active');
-      heroBackdrops[heroActive]?.classList.remove('active');
       heroActive = (heroActive + 1) % heroImages.length;
       heroImages[heroActive].classList.add('active');
-      heroBackdrops[heroActive]?.classList.add('active');
     }, 5000);
   }
 
