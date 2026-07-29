@@ -119,6 +119,13 @@ em { font-weight: 400; }
 @keyframes scrollLine { 0% { transform: translateY(0); } 55%, 100% { transform: translateY(200%); } }
 @keyframes morphSwap { from { opacity: 0; transform: scale(.82) rotate(-3deg); } to { opacity: 1; transform: scale(1) rotate(0); } }
 
+/* Monitor panoramici (16:9 e oltre, fino agli ultrawide 21:9). Le foto sono
+   16:9: piu' lo schermo e' largo e basso, piu' `cover` ne taglia la fascia
+   alta e quella bassa. Il parallax va spento (aggiungerebbe altro taglio) e
+   l'ancoraggio verticale va spostato dal centro al soggetto: porte, vetrate e
+   davanzali stanno nella meta' bassa, il cielo in alto e' rinunciabile.
+   La percentuale agisce in proporzione al taglio, quindi la stessa regola
+   vale sia a 1920x1080 sia a 2560x1080. */
 @media (min-width: 1101px) and (min-aspect-ratio: 16 / 9) {
   .hero-image {
     inset: 0;
@@ -128,7 +135,18 @@ em { font-weight: 400; }
     object-position: center;
     transform: none;
   }
-  .hero-image-initial { animation: heroFocusWide 1.8s var(--ease) both; }
+  .hero-image-1 { object-position: center 70%; }
+  .hero-image-2 { object-position: center 76%; }
+  .hero-image-3 { object-position: center 74%; }
+  /* Lo chalet innevato ha il soggetto in alto e neve in primo piano:
+     qui l'ancoraggio sale invece di scendere. */
+  .hero-image-4 { object-position: center 38%; }
+  /* Serve anche :first-child: heroFocus ha fill-mode `both` e il suo
+     fotogramma finale rimette scale(1.02) e --hero-shift, sovrascrivendo il
+     `transform: none` qui sopra. Senza questa riga il primo slide, cioe'
+     quello che si vede all'apertura, resta ingrandito del 2% e continua a
+     scorrere: e' il taglio in basso piu' evidente su questi schermi. */
+  .hero-image:first-child, .hero-image-initial { animation-name: heroFocusWide; }
 }
 
 @keyframes heroFocusWide {
@@ -150,6 +168,13 @@ em { font-weight: 400; }
 .signature-copy { position: absolute; left: max(48px, calc((100vw - 1380px) / 2)); bottom: 11%; }
 .signature-copy h2 { margin: 20px 0 0; font-size: clamp(56px, 6.3vw, 94px); }
 .signature-copy h2 em { color: #c9ddca; }
+
+/* Stessa correzione dell'hero: su monitor panoramici la fascia visibile si
+   assottiglia, quindi niente altezza extra ne' scorrimento e l'ancoraggio
+   scende sulla vetrata invece di restare a meta' cielo. */
+@media (min-width: 1101px) and (min-aspect-ratio: 16 / 9) {
+  .signature-image > img { height: 100%; object-position: center 68%; transform: none; }
+}
 
 /* Products */
 .products { padding: clamp(110px, 12vw, 185px) 0 0; background: var(--mist); }
