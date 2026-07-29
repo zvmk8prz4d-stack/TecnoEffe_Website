@@ -171,9 +171,13 @@ em { font-weight: 400; }
 
 /* Stessa correzione dell'hero: su monitor panoramici la fascia visibile si
    assottiglia, quindi niente altezza extra ne' scorrimento e l'ancoraggio
-   scende sulla vetrata invece di restare a meta' cielo. */
+   scende sulla vetrata invece di restare a meta' cielo.
+   L'altezza segue la larghezza (48vw) invece del tetto fisso di 860px: piu' lo
+   schermo e' largo, piu' la foto verrebbe schiacciata in una feritoia, e il
+   tetto fisso peggiorava le cose proprio sugli ultrawide. */
 @media (min-width: 1101px) and (min-aspect-ratio: 16 / 9) {
-  .signature-image > img { height: 100%; object-position: center 68%; transform: none; }
+  .signature-image { height: min(90vh, 48vw); }
+  .signature-image > img { height: 100%; object-position: center 80%; transform: none; }
 }
 
 /* Products */
