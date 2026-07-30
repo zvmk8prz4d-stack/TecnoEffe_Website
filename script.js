@@ -160,16 +160,25 @@
   const cards = [...document.querySelectorAll('.gallery-card')];
   let current = 0;
   let lightbox;
+  let lastFocused;
   const closeLightbox = () => {
     lightbox?.remove();
     lightbox = undefined;
     document.body.classList.remove('menu-locked');
+    // Chi naviga da tastiera deve ritrovarsi sulla card da cui era partito,
+    // non a inizio pagina.
+    lastFocused?.focus();
+    lastFocused = undefined;
   };
   const showLightbox = (index) => {
     current = (index + cards.length) % cards.length;
     const source = cards[current].querySelector('img');
     if (!source) return;
+    // Va letto prima di closeLightbox: quello rimette il focus e azzera il
+    // riferimento. Alla prima apertura e' la card cliccata, dopo va conservato.
+    const previous = lastFocused ?? document.activeElement;
     closeLightbox();
+    lastFocused = previous;
     lightbox = document.createElement('div');
     lightbox.className = 'lightbox';
     lightbox.setAttribute('role', 'dialog');
@@ -183,8 +192,25 @@
     lightbox.querySelector('.lightbox-prev').addEventListener('click', () => showLightbox(current - 1));
     lightbox.querySelector('.lightbox-next').addEventListener('click', () => showLightbox(current + 1));
     lightbox.addEventListener('click', (event) => { if (event.target === lightbox) closeLightbox(); });
+    lightbox.setAttribute('aria-label', source.alt || 'Immagine ingrandita');
     document.body.append(lightbox);
     document.body.classList.add('menu-locked');
+    lightbox.querySelector('.lightbox-close').focus();
+    // Il dialog e' modale: il Tab non deve poter uscire e finire sui link
+    // della pagina sotto, che nel frattempo e' inerte.
+    lightbox.addEventListener('keydown', (event) => {
+      if (event.key !== 'Tab') return;
+      const focusable = [...lightbox.querySelectorAll('button')];
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    });
   };
   cards.forEach((card, index) => card.addEventListener('click', () => showLightbox(index)));
   window.addEventListener('keydown', (event) => {
@@ -195,27 +221,76 @@
   });
 
   const form = document.querySelector('.quote form');
+
+  const mostraEsito = (ok) => {
+    // Un solo messaggio per volta: senza questo, invii ripetuti li impilano.
+    form.querySelector('.form-message')?.remove();
+    const message = document.createElement('p');
+    message.className = ok ? 'form-message success' : 'form-message error';
+    message.textContent = ok
+      ? 'Richiesta inviata. Ti ricontatteremo al più presto.'
+      : 'Invio non riuscito. Puoi chiamarci al 348 715 0612 o scriverci via email.';
+    message.setAttribute('role', 'status');
+    form.append(message);
+  };
+
   form?.addEventListener('submit', async (event) => {
     event.preventDefault();
     const button = form.querySelector('button[type="submit"]');
     const original = button?.textContent;
     if (button) { button.disabled = true; button.textContent = 'Invio in corso…'; }
+    // Letto a ogni invio, non una volta sola: e' lo stesso valore che userebbe
+    // il browser nel fallback senza JS, e resta vero se l'attributo cambia.
+    const endpoint = form.getAttribute('action');
+    const body = new URLSearchParams(new FormData(form));
+    // Apps Script chiude la richiesta entro pochi secondi: oltre i 15 e' un
+    // problema di rete, non lentezza del servizio.
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 15000);
     try {
-      await fetch('https://script.google.com/macros/s/AKfycbzh-uwCnC8pgixpJysmbi8alzodswUPN-qUL3k3vXhGu4jEfdXK5Z7bEo-QJDLVkqxaTw/exec', {
-        method: 'POST', mode: 'no-cors', body: new URLSearchParams(new FormData(form)),
-      });
-      form.reset();
-      const message = document.createElement('p');
-      message.className = 'form-message success';
-      message.textContent = 'Richiesta inviata. Ti ricontatteremo al più presto.';
-      form.append(message);
-    } catch {
-      const message = document.createElement('p');
-      message.className = 'form-message error';
-      message.textContent = 'Invio non riuscito. Puoi chiamarci o scriverci direttamente.';
-      form.append(message);
+      // Primo tentativo leggibile: se lo script risponde con gli header CORS
+      // sappiamo davvero com'e' andata, invece di dichiarare successo al buio.
+      const response = await fetch(endpoint, { method: 'POST', body, signal: controller.signal });
+      // Risposta leggibile: qui l'esito e' quello vero, nel bene e nel male.
+      // Nessun secondo tentativo, altrimenti un 404 o un 500 verrebbero
+      // riscritti come successo dalla richiesta opaca.
+      if (response.ok) { form.reset(); mostraEsito(true); }
+      else mostraEsito(false);
+    } catch (error) {
+      if (error.name === 'AbortError') {
+        mostraEsito(false);
+      } else {
+        // Qui il fetch non e' nemmeno arrivato a una risposta leggibile: o la
+        // rete e' caduta, o mancano gli header CORS. Nel secondo caso la
+        // richiesta parte lo stesso, ma l'esito resta opaco: meglio inviare al
+        // buio che perdere il contatto.
+        try {
+          await fetch(endpoint, { method: 'POST', mode: 'no-cors', body });
+          form.reset();
+          mostraEsito(true);
+        } catch {
+          mostraEsito(false);
+        }
+      }
     } finally {
+      clearTimeout(timeout);
       if (button) { button.disabled = false; button.textContent = original; }
     }
+  });
+
+  // La mappa di Google parte solo su richiesta esplicita: l'iframe imposta
+  // cookie di terze parti al primo caricamento.
+  const mapBox = document.querySelector('.contact-map[data-map-src]');
+  mapBox?.querySelector('.map-consent')?.addEventListener('click', () => {
+    const frame = document.createElement('iframe');
+    frame.title = 'Posizione Tecnoeffe a Cavedine';
+    frame.loading = 'lazy';
+    frame.referrerPolicy = 'no-referrer-when-downgrade';
+    frame.src = mapBox.dataset.mapSrc;
+    mapBox.replaceChildren(frame);
+  });
+
+  document.querySelectorAll('[data-current-year]').forEach((element) => {
+    element.textContent = String(new Date().getFullYear());
   });
 })();
