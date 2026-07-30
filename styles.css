@@ -57,14 +57,17 @@ em { font-weight: 400; }
 /* Header */
 .site-header { position: fixed; inset: 0 0 auto; z-index: 100; height: 98px; padding-inline: 44px; display: flex; align-items: center; justify-content: space-between; color: white; border-bottom: 1px solid rgba(255,255,255,.2); background: transparent; transition: height .45s var(--ease), background .45s var(--ease), border-color .45s var(--ease), box-shadow .45s var(--ease); }
 .site-header.scrolled { height: 76px; background: rgba(9, 17, 15, .88); border-color: rgba(255,255,255,.11); box-shadow: 0 12px 40px rgba(4,18,13,.18); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); }
-.brand { display: flex; align-items: center; gap: 16px; min-width: 300px; }
+.brand { position: relative; display: flex; align-items: center; gap: 16px; min-width: 300px; --logo-w: 236px; --logo-h: 72px; --logo-plate: rgba(5, 30, 21, .5); }
+/* Riquadro scuro dietro al logo: lo stacca dagli sfondi chiari della hero */
+.brand::before { content: ''; position: absolute; z-index: 0; left: -18px; top: 50%; width: calc(var(--logo-w) + 36px); height: calc(var(--logo-h) + 22px); transform: translateY(-50%); border-radius: 14px; background: var(--logo-plate); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); transition: width .45s var(--ease), height .45s var(--ease), background .45s var(--ease); pointer-events: none; }
+.site-header.scrolled .brand { --logo-w: 220px; --logo-h: 65px; --logo-plate: rgba(5, 30, 21, .28); }
 .brand img { width: 62px; height: 62px; object-fit: contain; filter: drop-shadow(0 2px 10px rgba(0,0,0,.2)); transition: width .45s var(--ease), height .45s var(--ease); }
 .site-header.scrolled .brand img { width: 50px; height: 50px; }
 .brand > span { display: flex; flex-direction: column; line-height: 1; }
 .brand b { font-size: 21px; font-weight: 500; letter-spacing: .23em; text-transform: uppercase; }
 .brand small { margin-top: 8px; font-size: 9px; letter-spacing: .16em; text-transform: uppercase; opacity: .76; }
 .brand .brand-owner { margin-top: 5px; font-size: 8px; letter-spacing: .13em; opacity: .9; }
-.brand > .brand-logo-viewport { position: relative; display: block; width: 236px; height: 72px; overflow: hidden; flex: 0 0 auto; }
+.brand > .brand-logo-viewport { position: relative; z-index: 1; display: block; width: 236px; height: 72px; overflow: hidden; flex: 0 0 auto; }
 .brand-logo-viewport .brand-logo { position: absolute; left: -33px; top: -54px; width: 310px; max-width: none; height: auto; object-fit: initial; filter: none; transition: width .45s var(--ease), left .45s var(--ease), top .45s var(--ease); }
 .site-header.scrolled .brand-logo-viewport { width: 220px; height: 65px; }
 .site-header.scrolled .brand-logo-viewport .brand-logo { left: -30px; top: -49px; width: 280px; height: auto; }
@@ -361,7 +364,8 @@ footer { color: white; background: var(--forest-dark); }
 @media (max-width: 760px) {
   :root { --shell: calc(100vw - 40px); }
   .site-header, .site-header.scrolled { height: 72px; padding-inline: 16px; }
-  .brand { min-width: 0; gap: 9px; }
+  .brand, .site-header.scrolled .brand { min-width: 0; gap: 9px; --logo-w: 184px; --logo-h: 53px; }
+  .brand::before { left: -10px; width: calc(var(--logo-w) + 20px); height: calc(var(--logo-h) + 14px); border-radius: 11px; }
   .brand img, .site-header.scrolled .brand img { width: 46px; height: 46px; }
   .brand > .brand-logo-viewport, .site-header.scrolled .brand-logo-viewport { width: 184px; height: 53px; }
   .brand-logo-viewport .brand-logo, .site-header.scrolled .brand-logo-viewport .brand-logo { left: -24px; top: -41px; width: 230px; height: auto; }
