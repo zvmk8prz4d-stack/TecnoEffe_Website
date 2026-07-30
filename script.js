@@ -58,6 +58,13 @@
         // Va tolto prima del src: assegnarlo a un'immagine nata lazy e senza
         // src non fa ripartire il caricamento, il browser l'ha gia' valutata.
         img.loading = 'eager';
+        // Prima il srcset: e' quello che decide il file da scaricare. Se
+        // arrivasse dopo il src, il browser partirebbe con il JPG piccolo e
+        // poi cambierebbe idea, scaricando due volte.
+        if (img.dataset.srcset) {
+          img.srcset = img.dataset.srcset;
+          delete img.dataset.srcset;
+        }
         img.src = img.dataset.src;
         delete img.dataset.src;
       }
