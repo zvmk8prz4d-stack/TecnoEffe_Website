@@ -4,10 +4,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="preload" as="image" href="./img/logo-tecnoeffe-white.png" />
+    <!-- Il preload deve dichiarare lo stesso srcset dell'immagine, altrimenti
+         il browser scarica il JPG e poi il WebP 4K: due download invece di uno. -->
     <link
       rel="preload"
       as="image"
       href="./img/hero-slide-01.jpg"
+      imagesrcset="./img/hero-slide-01.jpg 2048w, ./img/hero-slide-01.webp 3840w"
+      imagesizes="100vw"
       fetchpriority="high"
     />
     <title>Serramenti in PVC, porte e portoncini in Trentino — Tecnoeffe</title>
@@ -114,8 +118,8 @@
         ]
       }
     </script>
-    <link rel="stylesheet" href="./styles.css?v=20260730-34" />
-    <script defer src="./script.js?v=20260730-34"></script>
+    <link rel="stylesheet" href="./styles.css?v=20260730-35" />
+    <script defer src="./script.js?v=20260730-35"></script>
   </head>
   <body data-static-page="home">
     <div class="progress-bar" aria-hidden="true"></div>
@@ -169,10 +173,17 @@
     </div>
     <main id="top">
       <section class="hero">
+        <!-- Ogni slide esiste in due tagli: il JPG a 2048 px e il WebP a 3840.
+             Con srcset lo schermo 4K (o il retina) riceve il file grande, gli
+             altri il piccolo: l'originale non viene mai ridimensionato, e su
+             un monitor 1080p non si scarica un 4K che il browser
+             ridurrebbe comunque a 1920. -->
         <div class="hero-slides" aria-hidden="true">
           <img
             class="hero-image active"
             src="./img/hero-slide-01.jpg"
+            srcset="./img/hero-slide-01.jpg 2048w, ./img/hero-slide-01.webp 3840w"
+            sizes="100vw"
             alt=""
             style="--hero-mobile-position: 64% center"
             fetchpriority="high"
@@ -181,6 +192,8 @@
           /><img
             class="hero-image"
             data-src="./img/hero-slide-03.jpg"
+            data-srcset="./img/hero-slide-03-2048.jpg 2048w, ./img/hero-slide-03.webp 3840w"
+            sizes="100vw"
             alt=""
             style="--hero-mobile-position: 55% center"
             loading="lazy"
@@ -188,6 +201,8 @@
           /><img
             class="hero-image"
             data-src="./img/hero-slide-02.jpg"
+            data-srcset="./img/hero-slide-02.jpg 2048w, ./img/hero-slide-02.webp 3840w"
+            sizes="100vw"
             alt=""
             style="--hero-mobile-position: 70% center"
             loading="lazy"
@@ -195,6 +210,8 @@
           /><img
             class="hero-image"
             data-src="./img/hero-slide-04.jpg"
+            data-srcset="./img/hero-slide-04.jpg 2048w, ./img/hero-slide-04.webp 3840w"
+            sizes="100vw"
             alt=""
             style="--hero-mobile-position: 60% center"
             loading="lazy"
@@ -277,6 +294,11 @@
       >
         <img
           src="./img/dentro-fuori-4k.jpg"
+          srcset="
+            ./img/dentro-fuori-4k.jpg   2048w,
+            ./img/dentro-fuori-4k.webp  3840w
+          "
+          sizes="100vw"
           alt="Veranda luminosa con serramenti bianchi e vista sul paesaggio trentino"
           loading="lazy"
         />
