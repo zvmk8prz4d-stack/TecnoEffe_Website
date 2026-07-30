@@ -23,8 +23,17 @@
       property="og:description"
       content="Un solo artigiano, dal rilievo delle misure alla posa. Scopri prodotti e realizzazioni Tecnoeffe."
     />
+    <link
+      rel="canonical"
+      href="https://zvmk8prz4d-stack.github.io/TecnoEffe_Website/"
+    />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="it_IT" />
+    <meta
+      property="og:url"
+      content="https://zvmk8prz4d-stack.github.io/TecnoEffe_Website/"
+    />
+    <meta property="og:site_name" content="Tecnoeffe" />
     <meta
       property="og:image"
       content="https://zvmk8prz4d-stack.github.io/TecnoEffe_Website/img/hero-slide-01.jpg"
@@ -70,8 +79,43 @@
       href="https://fonts.gstatic.com"
       crossorigin="anonymous"
     />
-    <link rel="stylesheet" href="./styles.css?v=20260730-32" />
-    <script defer src="./script.js?v=20260728-28"></script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "LocalBusiness",
+        "@id": "https://zvmk8prz4d-stack.github.io/TecnoEffe_Website/#business",
+        "name": "Tecnoeffe di Caressa Enrico",
+        "description": "Fornitura e posa di serramenti in PVC, porte interne e portoncini a Cavedine, Valle dei Laghi e Trento.",
+        "url": "https://zvmk8prz4d-stack.github.io/TecnoEffe_Website/",
+        "image": "https://zvmk8prz4d-stack.github.io/TecnoEffe_Website/img/hero-slide-01.jpg",
+        "telephone": "+39 348 715 0612",
+        "email": "tecnoeffeserramenti@gmail.com",
+        "vatID": "02562370227",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "Via Evaristo Bolognani 30",
+          "postalCode": "38073",
+          "addressLocality": "Cavedine",
+          "addressRegion": "TN",
+          "addressCountry": "IT"
+        },
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": 45.9776306,
+          "longitude": 10.9832325
+        },
+        "areaServed": [
+          { "@type": "AdministrativeArea", "name": "Valle dei Laghi" },
+          { "@type": "AdministrativeArea", "name": "Provincia di Trento" }
+        ],
+        "sameAs": [
+          "https://www.instagram.com/tecnoeffe_serramenti",
+          "https://www.facebook.com/tecnoeffetrento"
+        ]
+      }
+    </script>
+    <link rel="stylesheet" href="./styles.css?v=20260730-34" />
+    <script defer src="./script.js?v=20260730-34"></script>
   </head>
   <body data-static-page="home">
     <div class="progress-bar" aria-hidden="true"></div>
@@ -136,24 +180,24 @@
             decoding="async"
           /><img
             class="hero-image"
-            src="./img/hero-slide-03.jpg"
+            data-src="./img/hero-slide-03.jpg"
             alt=""
             style="--hero-mobile-position: 55% center"
-            loading="eager"
+            loading="lazy"
             decoding="async"
           /><img
             class="hero-image"
-            src="./img/hero-slide-02.jpg"
+            data-src="./img/hero-slide-02.jpg"
             alt=""
             style="--hero-mobile-position: 70% center"
-            loading="eager"
+            loading="lazy"
             decoding="async"
           /><img
             class="hero-image"
-            src="./img/hero-slide-04.jpg"
+            data-src="./img/hero-slide-04.jpg"
             alt=""
             style="--hero-mobile-position: 60% center"
-            loading="eager"
+            loading="lazy"
             decoding="async"
           />
         </div>
@@ -869,7 +913,13 @@
               ></a>
             </div>
           </div>
-          <form data-reveal="true">
+          <!-- action/method sono il fallback se il JS non parte: senza, il
+               submit ricaricherebbe la pagina perdendo la richiesta. -->
+          <form
+            data-reveal="true"
+            method="post"
+            action="https://script.google.com/macros/s/AKfycbzh-uwCnC8pgixpJysmbi8alzodswUPN-qUL3k3vXhGu4jEfdXK5Z7bEo-QJDLVkqxaTw/exec"
+          >
             <input
               type="text"
               tabindex="-1"
@@ -910,7 +960,12 @@
                 required=""
               ></textarea></label
             ><label class="consent"
-              ><input type="checkbox" required="" /><span
+              ><input
+                type="checkbox"
+                name="consenso_privacy"
+                value="prestato"
+                required=""
+              /><span
                 >Acconsento al trattamento dei dati per essere ricontattato.
                 <a href="./privacy.html">Informativa privacy</a>.</span
               ></label
@@ -927,13 +982,32 @@
         <div class="section-shell contacts-top" data-reveal="true">
           <div class="contact-location">
             <p class="eyebrow light">Contatti</p>
-            <div class="contact-map">
-              <iframe
-                title="Posizione Tecnoeffe a Cavedine"
-                src="https://www.google.com/maps?q=Via+Evaristo+Bolognani+30,+38073+Cavedine+TN&amp;output=embed"
-                loading="lazy"
-                referrerpolicy="no-referrer-when-downgrade"
-              ></iframe>
+            <!-- La mappa parte solo su clic: l'iframe di Google imposta cookie
+                 di terze parti, che senza consenso preventivo non sono ammessi.
+                 L'URL viene da data-map-src, non c'e' nessuna richiesta a
+                 Google finche' l'utente non la chiede. -->
+            <div
+              class="contact-map"
+              data-map-src="https://www.google.com/maps?q=Via+Evaristo+Bolognani+30,+38073+Cavedine+TN&amp;output=embed"
+            >
+              <button class="map-consent" type="button">
+                <svg
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M12 21s7-6.4 7-11a7 7 0 1 0-14 0c0 4.6 7 11 7 11Z"></path>
+                  <circle cx="12" cy="10" r="2.6"></circle>
+                </svg>
+                <strong>Mostra la mappa</strong>
+                <small
+                  >Caricando la mappa accetti i cookie di Google Maps.</small
+                >
+              </button>
             </div>
           </div>
           <h2>Vicini al territorio.<br /><em>Vicini al progetto.</em></h2>
@@ -1046,9 +1120,8 @@
     <footer>
       <div class="section-shell footer-inner">
         <p>
-          ©
-          <!-- -->2026<!-- -->
-          Tecnoeffe di Caressa Enrico · P.IVA 02562370227
+          © <span data-current-year="true">2026</span> Tecnoeffe di Caressa
+          Enrico · P.IVA 02562370227
         </p>
         <div>
           <a href="./privacy.html">Privacy</a><a href="#top">Torna su ↑</a>
