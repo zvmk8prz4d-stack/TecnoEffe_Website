@@ -57,12 +57,29 @@
   const avviaVideo = () => {
     if (!heroVideo || reducedMotion || !heroVideo.src) return;
     if (heroVideo.classList.contains('active') && heroVideo.paused) {
+      // Safari su iOS non guarda l'attributo `muted` scritto nell'HTML: guarda
+      // la proprieta' al momento del play. Senza questa riga considera il video
+      // sonoro e rifiuta l'avvio automatico.
+      heroVideo.muted = true;
       heroVideo.play().catch(() => {});
     }
   };
   document.addEventListener('visibilitychange', () => {
     if (!document.hidden) avviaVideo();
   });
+  // Ultima rete: in risparmio energetico iOS blocca l'avvio comunque, e l'unico
+  // sblocco e' un gesto dell'utente. I listener restano finche' il video non ha
+  // girato davvero: con `once` si consumerebbero anche su un tocco arrivato
+  // mentre in scena c'e' una foto, cioe' proprio quando non servono a niente.
+  if (heroVideo) {
+    const tocchi = ['pointerdown', 'touchstart', 'keydown'];
+    const smetti = () =>
+      tocchi.forEach((e) => document.removeEventListener(e, avviaVideo));
+    tocchi.forEach((e) =>
+      document.addEventListener(e, avviaVideo, { passive: true })
+    );
+    heroVideo.addEventListener('playing', smetti, { once: true });
+  }
 
   // Gli slide sono sovrapposti dentro il viewport: loading="lazy" non li
   // rimanderebbe. Il src arriva da data-src quando la pagina e' pronta,
@@ -75,6 +92,9 @@
       heroVideo.src = window.matchMedia('(max-width: 760px)').matches
         ? heroVideo.dataset.videoMobile
         : heroVideo.dataset.videoDesktop;
+      // Su iOS un src assegnato da JS a un elemento nato con preload="none" non
+      // viene raccolto da solo: senza load() esplicita il play parte a vuoto.
+      heroVideo.load();
       avviaVideo();
     }
     heroImages.forEach((img) => {
