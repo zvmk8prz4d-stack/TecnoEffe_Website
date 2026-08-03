@@ -51,6 +51,19 @@
 
   const heroVideo = heroImages.find((el) => el.tagName === 'VIDEO');
 
+  // Chi apre il sito in una scheda di sfondo (un ctrl+clic) si vede rifiutare
+  // il play: il filmato resta fermo sul poster anche quando la scheda torna in
+  // primo piano. Il tentativo va quindi ripetuto al rientro.
+  const avviaVideo = () => {
+    if (!heroVideo || reducedMotion || !heroVideo.src) return;
+    if (heroVideo.classList.contains('active') && heroVideo.paused) {
+      heroVideo.play().catch(() => {});
+    }
+  };
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) avviaVideo();
+  });
+
   // Gli slide sono sovrapposti dentro il viewport: loading="lazy" non li
   // rimanderebbe. Il src arriva da data-src quando la pagina e' pronta,
   // cosi' all'apertura si scarica solo il primo.
@@ -62,7 +75,7 @@
       heroVideo.src = window.matchMedia('(max-width: 760px)').matches
         ? heroVideo.dataset.videoMobile
         : heroVideo.dataset.videoDesktop;
-      heroVideo.play().catch(() => {});
+      avviaVideo();
     }
     heroImages.forEach((img) => {
       if (img.dataset.src) {
@@ -103,7 +116,7 @@
       heroImages[heroActive].classList.add('active');
       if (heroImages[heroActive] === heroVideo && !reducedMotion) {
         heroVideo.currentTime = 0;
-        heroVideo.play().catch(() => {});
+        avviaVideo();
       }
       setTimeout(prossimaSlide, durataSlide(heroImages[heroActive]));
     };
