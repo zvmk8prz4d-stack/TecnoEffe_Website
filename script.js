@@ -54,8 +54,13 @@
   // Chi apre il sito in una scheda di sfondo (un ctrl+clic) si vede rifiutare
   // il play: il filmato resta fermo sul poster anche quando la scheda torna in
   // primo piano. Il tentativo va quindi ripetuto al rientro.
+  // Il video parte anche con "Riduci movimento" attiva. Scelta presa il 3 agosto
+  // 2026 dopo averlo visto restare fermo su un iPhone che aveva quell'opzione:
+  // la hero cambia slide comunque, quindi fermare il solo filmato non riduceva
+  // il movimento, nascondeva soltanto il video. Il resto delle animazioni resta
+  // governato da `reducedMotion` e dalla media query nel CSS.
   const avviaVideo = () => {
-    if (!heroVideo || reducedMotion || !heroVideo.src) return;
+    if (!heroVideo || !heroVideo.src) return;
     if (heroVideo.classList.contains('active') && heroVideo.paused) {
       // Safari su iOS non guarda l'attributo `muted` scritto nell'HTML: guarda
       // la proprieta' al momento del play. Senza questa riga considera il video
@@ -85,10 +90,8 @@
   // rimanderebbe. Il src arriva da data-src quando la pagina e' pronta,
   // cosi' all'apertura si scarica solo il primo.
   const caricaSlideDifferiti = () => {
-    // Il video nasce senza src: qui riceve il taglio adatto allo schermo e
-    // parte. Con la riduzione delle animazioni attiva non si scarica nulla e
-    // resta il poster.
-    if (heroVideo && !reducedMotion && !heroVideo.src) {
+    // Il video nasce senza src: qui riceve il taglio adatto allo schermo e parte.
+    if (heroVideo && !heroVideo.src) {
       heroVideo.src = window.matchMedia('(max-width: 760px)').matches
         ? heroVideo.dataset.videoMobile
         : heroVideo.dataset.videoDesktop;
@@ -121,8 +124,7 @@
     // Le foto restano 5 secondi; il video il tempo di finire, altrimenti si
     // vedrebbe solo il suo primo terzo. Serve un setTimeout ricorsivo: con
     // setInterval la durata sarebbe una sola per tutte le slide.
-    const durataSlide = (el) =>
-      el === heroVideo && !reducedMotion ? 13000 : 5000;
+    const durataSlide = (el) => (el === heroVideo ? 13000 : 5000);
     const prossimaSlide = () => {
       if (document.hidden) {
         setTimeout(prossimaSlide, 1000);
@@ -134,7 +136,7 @@
       if (heroImages[heroActive] === heroVideo) heroVideo.pause();
       heroActive = (heroActive + 1) % heroImages.length;
       heroImages[heroActive].classList.add('active');
-      if (heroImages[heroActive] === heroVideo && !reducedMotion) {
+      if (heroImages[heroActive] === heroVideo) {
         heroVideo.currentTime = 0;
         avviaVideo();
       }
