@@ -49,10 +49,21 @@
     if (index === 0) img.classList.add('hero-image-initial');
   });
 
+  const heroVideo = heroImages.find((el) => el.tagName === 'VIDEO');
+
   // Gli slide sono sovrapposti dentro il viewport: loading="lazy" non li
   // rimanderebbe. Il src arriva da data-src quando la pagina e' pronta,
   // cosi' all'apertura si scarica solo il primo.
   const caricaSlideDifferiti = () => {
+    // Il video nasce senza src: qui riceve il taglio adatto allo schermo e
+    // parte. Con la riduzione delle animazioni attiva non si scarica nulla e
+    // resta il poster.
+    if (heroVideo && !reducedMotion && !heroVideo.src) {
+      heroVideo.src = window.matchMedia('(max-width: 760px)').matches
+        ? heroVideo.dataset.videoMobile
+        : heroVideo.dataset.videoDesktop;
+      heroVideo.play().catch(() => {});
+    }
     heroImages.forEach((img) => {
       if (img.dataset.src) {
         // Va tolto prima del src: assegnarlo a un'immagine nata lazy e senza
@@ -74,12 +85,29 @@
   else window.addEventListener('load', caricaSlideDifferiti, { once: true });
   if (heroImages.length > 1) {
     let heroActive = 0;
-    setInterval(() => {
-      if (document.hidden) return;
+    // Le foto restano 5 secondi; il video il tempo di finire, altrimenti si
+    // vedrebbe solo il suo primo terzo. Serve un setTimeout ricorsivo: con
+    // setInterval la durata sarebbe una sola per tutte le slide.
+    const durataSlide = (el) =>
+      el === heroVideo && !reducedMotion ? 13000 : 5000;
+    const prossimaSlide = () => {
+      if (document.hidden) {
+        setTimeout(prossimaSlide, 1000);
+        return;
+      }
       heroImages[heroActive].classList.remove('active');
+      // Fuori scena il video non va lasciato girare: consumerebbe batteria per
+      // fotogrammi che nessuno vede.
+      if (heroImages[heroActive] === heroVideo) heroVideo.pause();
       heroActive = (heroActive + 1) % heroImages.length;
       heroImages[heroActive].classList.add('active');
-    }, 5000);
+      if (heroImages[heroActive] === heroVideo && !reducedMotion) {
+        heroVideo.currentTime = 0;
+        heroVideo.play().catch(() => {});
+      }
+      setTimeout(prossimaSlide, durataSlide(heroImages[heroActive]));
+    };
+    setTimeout(prossimaSlide, durataSlide(heroImages[0]));
   }
 
   const revealObserver = new IntersectionObserver((entries) => {
