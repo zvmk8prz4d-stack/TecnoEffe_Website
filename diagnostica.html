@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Prova del video della hero</title>
+    <style>
+      body { margin: 0; padding: 16px; font: 16px/1.5 system-ui, sans-serif; background: #0d1d19; color: #eaf5f0; }
+      h1 { font-size: 19px; margin: 0 0 12px; }
+      video { width: 100%; height: 200px; object-fit: cover; background: #000; border-radius: 8px; }
+      #esiti { margin-top: 14px; }
+      .riga { padding: 8px 10px; margin-bottom: 6px; border-radius: 6px; background: #16302a; }
+      .ok { background: #1c4433; }
+      .ko { background: #5a2020; }
+      b { color: #9fe3c4; }
+      button { margin-top: 12px; width: 100%; padding: 14px; font-size: 17px; border: 0; border-radius: 8px; background: #2f8f66; color: white; }
+    </style>
+  </head>
+  <body>
+    <h1>Prova del video della hero</h1>
+    <video
+      id="v"
+      poster="./posters/hero-01.jpg"
+      muted
+      loop
+      playsinline
+      preload="none"
+    ></video>
+    <button id="tocca">Tocca qui per provare ad avviarlo a mano</button>
+    <div id="esiti"></div>
+    <script>
+      var v = document.getElementById('v');
+      var esiti = document.getElementById('esiti');
+      function scrivi(testo, stato) {
+        var d = document.createElement('div');
+        d.className = 'riga' + (stato ? ' ' + stato : '');
+        d.innerHTML = testo;
+        esiti.appendChild(d);
+      }
+      scrivi('Browser: <b>' + navigator.userAgent + '</b>');
+      var mobile = window.matchMedia('(max-width: 760px)').matches;
+      scrivi('Larghezza schermo: <b>' + window.innerWidth + ' px</b> — considerato ' + (mobile ? 'telefono' : 'schermo grande'));
+      var file = mobile ? './video/hero-01-1280.mp4' : './video/hero-01-1920.mp4';
+      scrivi('File scelto: <b>' + file + '</b>');
+      var tipo = 'video/mp4; codecs="avc1.640028"';
+      scrivi('Il browser dice di poter leggere questo formato: <b>' + (v.canPlayType(tipo) || 'no') + '</b>');
+
+      v.addEventListener('loadedmetadata', function () {
+        scrivi('Il filmato è stato riconosciuto: <b>' + v.videoWidth + '×' + v.videoHeight + '</b>, durata ' + Math.round(v.duration) + ' s', 'ok');
+      });
+      v.addEventListener('playing', function () {
+        scrivi('IL VIDEO STA GIRANDO', 'ok');
+      });
+      v.addEventListener('stalled', function () { scrivi('Il caricamento si è bloccato (stalled)', 'ko'); });
+      v.addEventListener('error', function () {
+        var e = v.error;
+        scrivi('Errore sul filmato: <b>codice ' + (e && e.code) + '</b> ' + ((e && e.message) || ''), 'ko');
+      });
+
+      function prova(motivo) {
+        v.muted = true;
+        var p = v.play();
+        if (p && p.then) {
+          p.then(function () {
+            scrivi('Avvio accettato (' + motivo + ')', 'ok');
+          }).catch(function (err) {
+            scrivi('Avvio RIFIUTATO (' + motivo + '): <b>' + err.name + '</b> — ' + err.message, 'ko');
+          });
+        } else {
+          scrivi('Avvio richiesto (' + motivo + '), il browser non dice se ha accettato');
+        }
+      }
+
+      window.addEventListener('load', function () {
+        v.src = file;
+        v.load();
+        scrivi('Sorgente assegnata e caricamento avviato');
+        prova('in automatico, come fa il sito');
+      });
+
+      document.getElementById('tocca').addEventListener('click', function () {
+        prova('dopo il tuo tocco');
+      });
+
+      setTimeout(function () {
+        scrivi('Dopo 6 secondi: in pausa = <b>' + v.paused + '</b>, secondi riprodotti = <b>' + v.currentTime.toFixed(1) + '</b>, stato dati = <b>' + v.readyState + '</b> (4 = pronto)');
+      }, 6000);
+    </script>
+  </body>
+</html>
