@@ -45,6 +45,19 @@
       var tipo = 'video/mp4; codecs="avc1.640028"';
       scrivi('Il browser dice di poter leggere questo formato: <b>' + (v.canPlayType(tipo) || 'no') + '</b>');
 
+      // La home salta del tutto il video quando questa impostazione e' attiva:
+      // e' la prima cosa da guardare quando il filmato non parte solo li'.
+      var riduciMovimento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      scrivi(
+        'Impostazione "Riduci movimento" del telefono: <b>' +
+          (riduciMovimento ? 'ATTIVA' : 'non attiva') +
+          '</b>' +
+          (riduciMovimento
+            ? ' — è questa che nella home blocca il video e lascia la foto ferma'
+            : ''),
+        riduciMovimento ? 'ko' : 'ok'
+      );
+
       v.addEventListener('loadedmetadata', function () {
         scrivi('Il filmato è stato riconosciuto: <b>' + v.videoWidth + '×' + v.videoHeight + '</b>, durata ' + Math.round(v.duration) + ' s', 'ok');
       });
