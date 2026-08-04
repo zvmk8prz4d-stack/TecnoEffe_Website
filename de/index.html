@@ -107,6 +107,13 @@
       href="https://fonts.gstatic.com"
       crossorigin="anonymous"
     />
+    <!-- I caratteri vanno chiamati qui, non con un @import dentro styles.css:
+         da li' il browser li scopriva solo dopo aver letto tutto il foglio, e
+         le due richieste partivano in fila invece che insieme. -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&amp;family=Jost:wght@300;400;500&amp;display=swap"
+    />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -142,8 +149,8 @@
         ]
       }
     </script>
-    <link rel="stylesheet" href="../styles.css?v=20260804-43" />
-    <script defer src="../script.js?v=20260804-43"></script>
+    <link rel="stylesheet" href="../styles.css?v=20260804-44" />
+    <script defer src="../script.js?v=20260804-44"></script>
   </head>
   <body data-static-page="home">
     <div class="progress-bar" aria-hidden="true"></div>
