@@ -30,6 +30,31 @@
       rel="canonical"
       href="https://zvmk8prz4d-stack.github.io/TecnoEffe_Website/"
     />
+    <!-- Le tre lingue vivono su tre indirizzi distinti. Senza questi rimandi
+         incrociati Google le vedrebbe come pagine quasi uguali e ne
+         indicizzerebbe una sola: la versione tedesca non uscirebbe mai nelle
+         ricerche in tedesco. x-default punta all'italiano, che resta la
+         versione di riferimento. -->
+    <link
+      rel="alternate"
+      hreflang="it"
+      href="https://zvmk8prz4d-stack.github.io/TecnoEffe_Website/"
+    />
+    <link
+      rel="alternate"
+      hreflang="en"
+      href="https://zvmk8prz4d-stack.github.io/TecnoEffe_Website/en/"
+    />
+    <link
+      rel="alternate"
+      hreflang="de"
+      href="https://zvmk8prz4d-stack.github.io/TecnoEffe_Website/de/"
+    />
+    <link
+      rel="alternate"
+      hreflang="x-default"
+      href="https://zvmk8prz4d-stack.github.io/TecnoEffe_Website/"
+    />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="it_IT" />
     <meta
@@ -117,8 +142,8 @@
         ]
       }
     </script>
-    <link rel="stylesheet" href="./styles.css?v=20260803-40" />
-    <script defer src="./script.js?v=20260803-40"></script>
+    <link rel="stylesheet" href="./styles.css?v=20260804-41" />
+    <script defer src="./script.js?v=20260804-41"></script>
   </head>
   <body data-static-page="home">
     <div class="progress-bar" aria-hidden="true"></div>
@@ -140,7 +165,12 @@
           >Preventivo
           <svg aria-hidden="true" viewBox="0 0 24 24">
             <path d="M5 12h13M13 6l6 6-6 6"></path></svg
-        ></a>
+        ></a
+        ><span class="lang-switch" role="group" aria-label="Lingua del sito"
+          ><a class="lang-current" href="./" hreflang="it" lang="it" aria-current="true">ITA</a
+          ><a href="./en/" hreflang="en" lang="en">ENG</a
+          ><a href="./de/" hreflang="de" lang="de">DEU</a
+        ></span>
       </nav>
       <button
         class="menu-toggle"
@@ -153,7 +183,12 @@
     </header>
     <div class="mobile-menu" aria-hidden="true">
       <div class="mobile-links">
-        <span>Menu</span><a href="#prodotti">Prodotti</a
+        <span class="lang-switch lang-switch-mobile" role="group" aria-label="Lingua del sito"
+          ><a class="lang-current" href="./" hreflang="it" lang="it" aria-current="true">ITA</a
+          ><a href="./en/" hreflang="en" lang="en">ENG</a
+          ><a href="./de/" hreflang="de" lang="de">DEU</a
+        ></span
+        ><span>Menu</span><a href="#prodotti">Prodotti</a
         ><a href="#metodo">Il metodo</a
         ><a href="#realizzazioni">Realizzazioni</a
         ><a href="#contatti">Contatti</a
