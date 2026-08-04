@@ -118,7 +118,17 @@ em { font-weight: 400; }
 .hero-content { position: relative; z-index: 2; width: min(700px, 48vw); margin-left: max(280px, calc((100vw - 1380px) / 2)); padding-top: 78px; }
 .hero h1 { margin: 24px 0 30px; font-size: clamp(68px, 7.7vw, 122px); line-height: .82; letter-spacing: -.045em; }
 .hero h1 em { color: #bbd7bf; }
-.hero-copy { max-width: 510px; margin-bottom: 36px; color: rgba(255,255,255,.82); font-size: clamp(16px, 1.35vw, 21px); line-height: 1.6; }
+.hero-copy { max-width: 510px; margin-bottom: 36px; color: white; font-size: clamp(16px, 1.35vw, 21px); line-height: 1.6; }
+/* L'occhiello della hero, senza .light, prendeva il verde pensato per i fondi
+   chiari: sulla foto spariva. Sotto sta sempre una fotografia, quindi qui va
+   bianco. */
+.hero-content .eyebrow { color: rgba(255,255,255,.92); }
+/* Dietro il testo non c'e' un fondo piatto ma legno rigato, vetri e montagne.
+   Il rapporto di contrasto misurato era gia' sopra soglia (6,4 nel punto
+   peggiore contro un minimo di 4,5), eppure il testo si impastava col dettaglio
+   della foto: il calcolo presuppone uno sfondo uniforme. Questa ombra e' larga
+   e tenue apposta — non si legge come ombra, stacca le lettere dalla trama. */
+.hero-content .eyebrow, .hero h1, .hero-copy { text-shadow: 0 1px 2px rgba(3,18,13,.35), 0 2px 22px rgba(3,18,13,.55); }
 .hero-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 28px; }
 .hero-meta { position: absolute; left: max(48px, calc((100vw - 1380px) / 2)); bottom: 34px; z-index: 2; display: flex; gap: 36px; color: rgba(255,255,255,.75); font-size: 12px; letter-spacing: .22em; text-transform: uppercase; }
 .hero-meta span { display: flex; align-items: center; gap: 11px; }
@@ -413,7 +423,10 @@ footer { color: white; background: var(--forest-dark); }
   .hero-image-2 { object-position: 55% center; }
   .hero-image-3 { object-position: 70% center; }
   .hero-image-4 { object-position: 60% center; }
-  .hero-overlay { background: linear-gradient(0deg, rgba(3,18,13,.91) 0%, rgba(3,18,13,.5) 47%, rgba(3,18,13,.15) 77%), linear-gradient(90deg, rgba(3,18,13,.28), transparent); }
+  /* Su telefono il testo sta in fondo, sopra la parte piu' luminosa della foto:
+     il velo sale piu' in alto e piu' pieno di prima (.5 -> .66 a meta' schermo).
+     Sopra i tre quarti resta leggero, cosi' l'inquadratura non si spegne. */
+  .hero-overlay { background: linear-gradient(0deg, rgba(3,18,13,.93) 0%, rgba(3,18,13,.66) 42%, rgba(3,18,13,.26) 72%, transparent 92%), linear-gradient(90deg, rgba(3,18,13,.28), transparent); }
   .hero-content { width: auto; margin: 0 20px; padding: 0 0 92px; }
   .hero h1 { margin: 18px 0 20px; font-size: clamp(56px, 17vw, 77px); }
   .hero-copy { max-width: 38ch; margin-bottom: 26px; font-size: 15px; line-height: 1.52; }
