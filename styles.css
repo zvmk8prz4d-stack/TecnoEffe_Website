@@ -71,8 +71,9 @@ em { font-weight: 400; }
 .site-header nav > a:not(.nav-cta) { position: relative; font-size: 12px; font-weight: 500; letter-spacing: .17em; text-transform: uppercase; }
 .site-header nav > a:not(.nav-cta)::after { content: ''; position: absolute; left: 0; bottom: -8px; width: 100%; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: right; transition: transform .4s var(--ease); }
 .site-header nav > a:hover::after { transform: scaleX(1); transform-origin: left; }
-.nav-cta { display: inline-flex; align-items: center; gap: 14px; min-height: 46px; padding: 0 24px; border: 1px solid rgba(255,255,255,.6); border-radius: 100px; font-size: 12px; font-weight: 500; letter-spacing: .15em; text-transform: uppercase; transition: background .35s, color .35s; }
-.nav-cta:hover { color: var(--forest-dark); background: white; }
+.nav-cta { display: inline-flex; align-items: center; gap: 14px; min-height: 46px; padding: 0 24px; border: 1px solid rgba(255,255,255,.88); border-radius: 100px; font-size: 12px; font-weight: 500; letter-spacing: .15em; text-transform: uppercase; box-shadow: 0 2px 16px rgba(3,18,13,.3); transition: background .35s, color .35s, border-color .35s, box-shadow .35s; }
+/* Sul bianco pieno del passaggio del mouse l'ombra del testo sporcherebbe. */
+.nav-cta:hover { color: var(--forest-dark); background: white; border-color: white; box-shadow: none; text-shadow: none; }
 .menu-toggle { display: none; position: relative; z-index: 110; width: 48px; height: 48px; padding: 0; border: 0; border-radius: 50%; background: rgba(255,255,255,.1); cursor: pointer; }
 .menu-toggle span { position: absolute; left: 13px; width: 22px; height: 1px; background: white; transition: transform .35s var(--ease), top .35s var(--ease); }
 .menu-toggle span:first-child { top: 19px; }
@@ -132,17 +133,21 @@ em { font-weight: 400; }
    peggiore contro un minimo di 4,5), eppure il testo si impastava col dettaglio
    della foto: il calcolo presuppone uno sfondo uniforme. Questa ombra e' larga
    e tenue apposta — non si legge come ombra, stacca le lettere dalla trama. */
-.hero-content .eyebrow, .hero h1, .hero-copy { text-shadow: 0 1px 2px rgba(3,18,13,.35), 0 2px 22px rgba(3,18,13,.55); }
+.hero-content .eyebrow, .hero h1, .hero-copy, .hero-meta, .scroll-cue, .site-header nav a { text-shadow: 0 1px 2px rgba(3,18,13,.35), 0 2px 22px rgba(3,18,13,.55); }
+/* A barra opaca sotto non c'e' piu' una foto ma un fondo scuro pieno: l'ombra
+   diventa inutile e il bordo del pulsante puo' tornare discreto. */
+.site-header.scrolled nav a { text-shadow: none; }
+.site-header.scrolled .nav-cta { border-color: rgba(255,255,255,.6); box-shadow: none; }
 .hero-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 28px; }
-.hero-meta { position: absolute; left: max(48px, calc((100vw - 1380px) / 2)); bottom: 34px; z-index: 2; display: flex; gap: 36px; color: rgba(255,255,255,.75); font-size: 12px; letter-spacing: .22em; text-transform: uppercase; }
+.hero-meta { position: absolute; left: max(48px, calc((100vw - 1380px) / 2)); bottom: 34px; z-index: 2; display: flex; gap: 36px; color: white; font-size: 12px; letter-spacing: .22em; text-transform: uppercase; }
 .hero-meta span { display: flex; align-items: center; gap: 11px; }
 .hero-meta span::before { content: ''; width: 5px; height: 5px; border: 1px solid currentColor; border-radius: 50%; }
 .hero-morph { position: absolute; left: 44px; top: 116px; z-index: 3; width: 184px; display: flex; flex-direction: column; align-items: center; color: rgba(255,255,255,.94); pointer-events: none; }
 .hero-morph-stage { position: relative; width: clamp(116px, 9.6vw, 156px); aspect-ratio: 120 / 150; filter: drop-shadow(0 7px 18px rgba(3,18,12,.28)); }
 .hero-morph svg { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 1; }
 .hero-morph svg.morph-swap { animation: morphSwap 1.05s var(--ease) both; }
-.scroll-cue { position: absolute; left: 50%; bottom: 28px; z-index: 3; display: flex; flex-direction: column; align-items: center; gap: 10px; color: rgba(255,255,255,.8); font-size: 9px; letter-spacing: .25em; text-transform: uppercase; transform: translateX(-50%); }
-.scroll-cue i { position: relative; width: 1px; height: 42px; overflow: hidden; background: rgba(255,255,255,.26); }
+.scroll-cue { position: absolute; left: 50%; bottom: 28px; z-index: 3; display: flex; flex-direction: column; align-items: center; gap: 12px; color: white; font-size: 11px; letter-spacing: .25em; text-transform: uppercase; transform: translateX(-50%); }
+.scroll-cue i { position: relative; width: 1px; height: 42px; overflow: hidden; background: rgba(255,255,255,.45); }
 .scroll-cue i::after { content: ''; position: absolute; inset: -100% 0 auto; height: 100%; background: white; animation: scrollLine 2s ease-in-out infinite; }
 .hero-enter { opacity: 0; transform: translateY(30px); animation: heroEnter .9s var(--ease) forwards; }
 .hero-enter.delay-1 { animation-delay: .25s; }.hero-enter.delay-2 { animation-delay: .4s; }.hero-enter.delay-3 { animation-delay: .62s; }.hero-enter.delay-4 { animation-delay: .82s; }
