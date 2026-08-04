@@ -83,6 +83,26 @@ em { font-weight: 400; }
 .mobile-cta { display: inline-flex; align-items: center; gap: 20px; margin-top: 32px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,.45); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; }
 .mobile-contact { display: flex; flex-direction: column; gap: 6px; color: rgba(255,255,255,.72); font-size: 13px; text-align: right; }
 
+/* Selettore lingua */
+.lang-switch { display: inline-flex; align-items: center; }
+.lang-switch a { padding: 0 10px; font-size: 11px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: rgba(255,255,255,.55); transition: color .35s var(--ease); }
+.lang-switch a:first-child { padding-left: 0; }
+.lang-switch a:last-child { padding-right: 0; }
+.lang-switch a + a { border-left: 1px solid rgba(255,255,255,.26); }
+.lang-switch a:hover { color: white; }
+.lang-switch a.lang-current { color: white; }
+/* Nel menu mobile il selettore e' un <span> figlio diretto di .mobile-links,
+   quindi prende lo stile dell'etichetta "Menu". Serve la stessa specificita' di
+   quella regola, altrimenti vince lei e lo stacco resta quello sbagliato. */
+.mobile-links > .lang-switch-mobile { margin-bottom: 30px; }
+.lang-switch-mobile a { font-size: 13px; letter-spacing: .18em; }
+/* La privacy ha fondo chiaro: gli stessi bianchi sarebbero illeggibili. */
+.lang-switch-dark a { color: rgba(15, 42, 33, .45); }
+.lang-switch-dark a + a { border-left-color: rgba(15, 42, 33, .2); }
+.lang-switch-dark a:hover, .lang-switch-dark a.lang-current { color: var(--green); }
+.privacy-top { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 50px; }
+.privacy-top .privacy-back { margin-bottom: 0; }
+
 /* Hero */
 .hero { position: relative; min-height: 100svh; display: flex; align-items: center; overflow: hidden; color: white; background: #0d1d19; }
 .hero-slides { position: absolute; inset: 0; overflow: hidden; background: #0d1d19; }
@@ -342,6 +362,16 @@ footer { color: white; background: var(--forest-dark); }
 .privacy-page h2 { margin: 42px 0 13px; color: var(--green); font-family: var(--sans); font-size: 11px; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; }
 .privacy-page p { color: var(--muted); font-size: 15px; }
 .privacy-page a { color: var(--green); }
+
+/* Il selettore lingua ha allungato la barra di un centinaio di pixel. Sotto i
+   1400 px il menu va stretto: senza, la versione italiana (la piu' lunga delle
+   tre) esce dal bordo destro gia' a 1150 px, cioe' prima che a 1100 scatti il
+   menu a scomparsa. Misurato a 1101 px: sforava di 49 px. */
+@media (max-width: 1400px) {
+  .site-header { padding-inline: 34px; }
+  .site-header nav { gap: 21px; }
+  .lang-switch a { padding: 0 8px; }
+}
 
 @media (max-width: 1100px) {
   :root { --shell: min(100% - 56px, 1100px); }
