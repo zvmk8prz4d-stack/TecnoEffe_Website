@@ -1,4 +1,48 @@
 (() => {
+  // Le tre lingue vivono su tre pagine distinte, ma il JS e' uno solo: le
+  // poche stringhe che compaiono a schermo vengono da qui, scelte guardando
+  // il lang della pagina. Duplicare il file per lingua significherebbe tre
+  // copie da tenere allineate a ogni correzione.
+  const dizionario = {
+    it: {
+      pausa: 'Metti in pausa',
+      riproduci: 'Riproduci',
+      chiudi: 'Chiudi',
+      precedente: 'Immagine precedente',
+      successiva: 'Immagine successiva',
+      ingrandita: 'Immagine ingrandita',
+      inviata: 'Richiesta inviata. Ti ricontatteremo al più presto.',
+      nonInviata: 'Invio non riuscito. Puoi chiamarci al 348 715 0612 o scriverci via email.',
+      inCorso: 'Invio in corso…',
+      mappa: 'Posizione Tecnoeffe a Cavedine',
+    },
+    en: {
+      pausa: 'Pause',
+      riproduci: 'Play',
+      chiudi: 'Close',
+      precedente: 'Previous image',
+      successiva: 'Next image',
+      ingrandita: 'Enlarged image',
+      inviata: 'Request sent. We will get back to you as soon as possible.',
+      nonInviata: 'Sending failed. You can call us on +39 348 715 0612 or send us an email.',
+      inCorso: 'Sending…',
+      mappa: 'Tecnoeffe location in Cavedine',
+    },
+    de: {
+      pausa: 'Pause',
+      riproduci: 'Abspielen',
+      chiudi: 'Schließen',
+      precedente: 'Vorheriges Bild',
+      successiva: 'Nächstes Bild',
+      ingrandita: 'Vergrößertes Bild',
+      inviata: 'Anfrage gesendet. Wir melden uns so schnell wie möglich.',
+      nonInviata: 'Senden fehlgeschlagen. Sie können uns unter +39 348 715 0612 anrufen oder eine E-Mail schreiben.',
+      inCorso: 'Wird gesendet…',
+      mappa: 'Standort von Tecnoeffe in Cavedine',
+    },
+  };
+  const t = dizionario[document.documentElement.lang] ?? dizionario.it;
+
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const root = document.documentElement;
   const menuButton = document.querySelector('.menu-toggle');
@@ -202,7 +246,7 @@
       : '<svg aria-hidden="true" viewBox="0 0 24 24"><path d="m9 6 9 6-9 6Z"></path></svg>';
     const setState = (playing) => {
       button.innerHTML = icon(playing);
-      button.setAttribute('aria-label', playing ? 'Metti in pausa' : 'Riproduci');
+      button.setAttribute('aria-label', playing ? t.pausa : t.riproduci);
     };
     video.muted = true;
     video.defaultMuted = true;
@@ -253,7 +297,7 @@
     lightbox.className = 'lightbox';
     lightbox.setAttribute('role', 'dialog');
     lightbox.setAttribute('aria-modal', 'true');
-    lightbox.innerHTML = '<button class="lightbox-close" type="button" aria-label="Chiudi">×</button><button class="lightbox-prev" type="button" aria-label="Immagine precedente">←</button><figure><img><figcaption></figcaption></figure><button class="lightbox-next" type="button" aria-label="Immagine successiva">→</button>';
+    lightbox.innerHTML = `<button class="lightbox-close" type="button" aria-label="${t.chiudi}">×</button><button class="lightbox-prev" type="button" aria-label="${t.precedente}">←</button><figure><img><figcaption></figcaption></figure><button class="lightbox-next" type="button" aria-label="${t.successiva}">→</button>`;
     const image = lightbox.querySelector('img');
     image.src = source.src;
     image.alt = source.alt;
@@ -262,7 +306,7 @@
     lightbox.querySelector('.lightbox-prev').addEventListener('click', () => showLightbox(current - 1));
     lightbox.querySelector('.lightbox-next').addEventListener('click', () => showLightbox(current + 1));
     lightbox.addEventListener('click', (event) => { if (event.target === lightbox) closeLightbox(); });
-    lightbox.setAttribute('aria-label', source.alt || 'Immagine ingrandita');
+    lightbox.setAttribute('aria-label', source.alt || t.ingrandita);
     document.body.append(lightbox);
     document.body.classList.add('menu-locked');
     lightbox.querySelector('.lightbox-close').focus();
@@ -297,9 +341,7 @@
     form.querySelector('.form-message')?.remove();
     const message = document.createElement('p');
     message.className = ok ? 'form-message success' : 'form-message error';
-    message.textContent = ok
-      ? 'Richiesta inviata. Ti ricontatteremo al più presto.'
-      : 'Invio non riuscito. Puoi chiamarci al 348 715 0612 o scriverci via email.';
+    message.textContent = ok ? t.inviata : t.nonInviata;
     message.setAttribute('role', 'status');
     form.append(message);
   };
@@ -308,7 +350,7 @@
     event.preventDefault();
     const button = form.querySelector('button[type="submit"]');
     const original = button?.textContent;
-    if (button) { button.disabled = true; button.textContent = 'Invio in corso…'; }
+    if (button) { button.disabled = true; button.textContent = t.inCorso; }
     // Letto a ogni invio, non una volta sola: e' lo stesso valore che userebbe
     // il browser nel fallback senza JS, e resta vero se l'attributo cambia.
     const endpoint = form.getAttribute('action');
@@ -353,7 +395,7 @@
   const mapBox = document.querySelector('.contact-map[data-map-src]');
   mapBox?.querySelector('.map-consent')?.addEventListener('click', () => {
     const frame = document.createElement('iframe');
-    frame.title = 'Posizione Tecnoeffe a Cavedine';
+    frame.title = t.mappa;
     frame.loading = 'lazy';
     frame.referrerPolicy = 'no-referrer-when-downgrade';
     frame.src = mapBox.dataset.mapSrc;
