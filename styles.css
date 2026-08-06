@@ -63,10 +63,9 @@ em { font-weight: 400; }
 .site-header::before { content: ''; position: absolute; inset: 0 0 -36px; background: linear-gradient(to bottom, rgba(4, 20, 14, .58), rgba(4, 20, 14, .3) 62%, rgba(4, 20, 14, 0)); opacity: 1; transition: opacity .45s var(--ease); pointer-events: none; }
 .site-header.scrolled::before { opacity: 0; }
 .brand { position: relative; display: flex; align-items: center; gap: 16px; min-width: 300px; }
-.brand > .brand-logo-viewport { position: relative; z-index: 1; display: block; width: 236px; height: 72px; overflow: hidden; flex: 0 0 auto; }
-.brand-logo-viewport .brand-logo { position: absolute; left: -33px; top: -54px; width: 310px; max-width: none; height: auto; object-fit: initial; filter: none; transition: width .45s var(--ease), left .45s var(--ease), top .45s var(--ease); }
-.site-header.scrolled .brand-logo-viewport { width: 220px; height: 65px; }
-.site-header.scrolled .brand-logo-viewport .brand-logo { left: -30px; top: -49px; width: 280px; height: auto; }
+.brand > .brand-logo-viewport { position: relative; z-index: 1; display: block; width: 245px; flex: 0 0 auto; transition: width .45s var(--ease); }
+.brand-logo-viewport .brand-logo { display: block; width: 100%; max-width: none; height: auto; object-fit: initial; filter: none; }
+.site-header.scrolled .brand-logo-viewport { width: 228px; }
 .site-header nav { display: flex; align-items: center; gap: 31px; }
 .site-header nav > a:not(.nav-cta) { position: relative; font-size: 12px; font-weight: 500; letter-spacing: .17em; text-transform: uppercase; }
 .site-header nav > a:not(.nav-cta)::after { content: ''; position: absolute; left: 0; bottom: -8px; width: 100%; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: right; transition: transform .4s var(--ease); }
@@ -421,8 +420,7 @@ footer { color: white; background: var(--forest-dark); }
   .site-header, .site-header.scrolled { height: 72px; padding-inline: 16px; }
   .brand { min-width: 0; gap: 9px; }
   .site-header::before { inset: 0 0 -28px; background: linear-gradient(to bottom, rgba(4, 20, 14, .62), rgba(4, 20, 14, .34) 62%, rgba(4, 20, 14, 0)); }
-  .brand > .brand-logo-viewport, .site-header.scrolled .brand-logo-viewport { width: 184px; height: 53px; }
-  .brand-logo-viewport .brand-logo, .site-header.scrolled .brand-logo-viewport .brand-logo { left: -24px; top: -41px; width: 230px; height: auto; }
+  .brand > .brand-logo-viewport, .site-header.scrolled .brand-logo-viewport { width: 182px; }
   .menu-toggle { width: 42px; height: 42px; }
   .menu-toggle span { left: 11px; width: 20px; }
   .mobile-menu { grid-template-columns: 1fr; align-content: end; padding: 106px 24px 36px; }
