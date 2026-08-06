@@ -172,9 +172,11 @@ em { font-weight: 400; }
     object-position: center;
     transform: none;
   }
+  /* Dal 6 agosto 2026 le slide 2 e 3 hanno scambiato posto (l'ordine segue la
+     giornata: giorno, autunno, tramonto, notte), e con loro i due ancoraggi. */
   .hero-image-1 { object-position: center 70%; }
-  .hero-image-2 { object-position: center 76%; }
-  .hero-image-3 { object-position: center 74%; }
+  .hero-image-2 { object-position: center 74%; }
+  .hero-image-3 { object-position: center 76%; }
   /* Lo chalet innevato ha il soggetto in alto e neve in primo piano:
      qui l'ancoraggio sale invece di scendere. */
   .hero-image-4 { object-position: center 38%; }
@@ -429,8 +431,8 @@ footer { color: white; background: var(--forest-dark); }
   .hero { height: 100svh; min-height: 100svh; max-height: 100svh; align-items: flex-end; }
   .hero-image { inset: 0; height: 100%; transform: none; }
   .hero-image-1 { object-position: 64% center; }
-  .hero-image-2 { object-position: 55% center; }
-  .hero-image-3 { object-position: 70% center; }
+  .hero-image-2 { object-position: 70% center; }
+  .hero-image-3 { object-position: 55% center; }
   .hero-image-4 { object-position: 60% center; }
   /* Su telefono il testo sta in fondo, sopra la parte piu' luminosa della foto:
      il velo sale piu' in alto e piu' pieno di prima (.5 -> .66 a meta' schermo).
