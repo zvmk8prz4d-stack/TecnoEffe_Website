@@ -149,8 +149,8 @@
         ]
       }
     </script>
-    <link rel="stylesheet" href="../styles.css?v=20260804-45" />
-    <script defer src="../script.js?v=20260804-45"></script>
+    <link rel="stylesheet" href="../styles.css?v=20260806-46" />
+    <script defer src="../script.js?v=20260806-46"></script>
   </head>
   <body data-static-page="home">
     <div class="progress-bar" aria-hidden="true"></div>
@@ -208,22 +208,21 @@
     </div>
     <main id="top">
       <section class="hero">
-        <!-- Ogni slide fotografica esiste in due tagli: il JPG a 2048 px e il
-             WebP a 3840. Con srcset lo schermo 4K (o il retina) riceve il file
-             grande, gli altri il piccolo: l'originale non viene mai
-             ridimensionato, e su un monitor 1080p non si scarica un 4K che il
-             browser ridurrebbe comunque a 1920. -->
+        <!-- Quattro filmati, in ordine di giornata: casa in legno di giorno,
+             casa in pietra tra i vigneti d'autunno, villa sul lago al tramonto,
+             chalet nella neve di notte.
+             Nessuno ha `autoplay` ne' `src` scritto qui: con quegli attributi il
+             browser scaricherebbe megabyte di filmato insieme al primo schermo.
+             Le sorgenti le assegna script.js, e non tutte insieme — ognuna
+             arriva quando la slide precedente entra in scena, cioe' con dieci
+             secondi di anticipo. Assegnarle tutte al caricamento significava
+             far partire circa 24 MB all'apertura della pagina.
+             Il taglio da 1280 e quello da 1920 non possono stare in due
+             <source media>: dentro un <video> quell'attributo viene ignorato
+             e il browser prende comunque il primo (verificato su Chrome, che
+             serviva il file mobile a 1280 px di viewport). La scelta la fa il
+             JS con matchMedia. -->
         <div class="hero-slides" aria-hidden="true">
-          <!-- La prima slide e' un video. Niente `autoplay` e nessun src qui: con
-               quell'attributo il browser scaricherebbe il filmato insieme al
-               primo schermo. La sorgente e il play arrivano da script.js a
-               pagina caricata, come i data-src delle slide successive; fino a
-               quel momento si vede il poster.
-               Il taglio da 1280 e quello da 1920 non possono stare in due
-               <source media>: dentro un <video> quell'attributo viene ignorato
-               e il browser prende comunque il primo (verificato su Chrome, che
-               serviva il file mobile a 1280 px di viewport). La scelta la fa il
-               JS con matchMedia. -->
           <video
             class="hero-image active"
             poster="../posters/hero-01.jpg"
@@ -234,34 +233,37 @@
             playsinline
             preload="none"
             tabindex="-1"
-          ></video><img
+          ></video><video
             class="hero-image"
-            data-src="../img/hero-slide-03.jpg"
-            data-srcset="../img/hero-slide-03-2048.jpg 2048w, ../img/hero-slide-03.webp 3840w"
-            sizes="100vw"
-            alt=""
-            style="--hero-mobile-position: 55% center"
-            loading="lazy"
-            decoding="async"
-          /><img
+            data-poster="../posters/hero-02.jpg"
+            data-video-mobile="../video/hero-02-1280.mp4"
+            data-video-desktop="../video/hero-02-1920.mp4"
+            muted
+            loop
+            playsinline
+            preload="none"
+            tabindex="-1"
+          ></video><video
             class="hero-image"
-            data-src="../img/hero-slide-02.jpg"
-            data-srcset="../img/hero-slide-02.jpg 2048w, ../img/hero-slide-02.webp 3840w"
-            sizes="100vw"
-            alt=""
-            style="--hero-mobile-position: 70% center"
-            loading="lazy"
-            decoding="async"
-          /><img
+            data-poster="../posters/hero-03.jpg"
+            data-video-mobile="../video/hero-03-1280.mp4"
+            data-video-desktop="../video/hero-03-1920.mp4"
+            muted
+            loop
+            playsinline
+            preload="none"
+            tabindex="-1"
+          ></video><video
             class="hero-image"
-            data-src="../img/hero-slide-04.jpg"
-            data-srcset="../img/hero-slide-04.jpg 2048w, ../img/hero-slide-04.webp 3840w"
-            sizes="100vw"
-            alt=""
-            style="--hero-mobile-position: 60% center"
-            loading="lazy"
-            decoding="async"
-          />
+            data-poster="../posters/hero-04.jpg"
+            data-video-mobile="../video/hero-04-1280.mp4"
+            data-video-desktop="../video/hero-04-1920.mp4"
+            muted
+            loop
+            playsinline
+            preload="none"
+            tabindex="-1"
+          ></video>
         </div>
         <div class="hero-overlay"></div>
         <div class="hero-morph hero-enter delay-4" aria-hidden="true">
