@@ -93,100 +93,126 @@
     if (index === 0) img.classList.add('hero-image-initial');
   });
 
-  const heroVideo = heroImages.find((el) => el.tagName === 'VIDEO');
+  const heroVideos = heroImages.filter((el) => el.tagName === 'VIDEO');
+  const suTelefono = () => window.matchMedia('(max-width: 760px)').matches;
+
+  // Le quattro sorgenti non si assegnano tutte insieme: sarebbero circa 24 MB
+  // messi in coda appena aperta la pagina. Ognuna arriva quando tocca alla
+  // slide precedente, cioe' con dieci secondi di margine per riempire il
+  // buffer. Il poster segue la stessa regola, altrimenti il browser
+  // scaricherebbe subito quattro fotogrammi buttati.
+  const preparaVideo = (video) => {
+    if (!video || video.src) return;
+    if (video.dataset.poster) {
+      video.poster = video.dataset.poster;
+      delete video.dataset.poster;
+    }
+    // Senza questa riga il precaricamento non esisterebbe: l'elemento nasce
+    // `preload="none"` per non pesare sul primo schermo, e con quel valore
+    // assegnare la sorgente in anticipo non scarica nulla fino al play. Qui la
+    // slide sta per entrare in scena, quindi il file va voluto davvero.
+    video.preload = 'auto';
+    video.src = suTelefono() ? video.dataset.videoMobile : video.dataset.videoDesktop;
+    // Su iOS un src assegnato da JS a un elemento nato con preload="none" non
+    // viene raccolto da solo: senza load() esplicita il play parte a vuoto.
+    video.load();
+  };
 
   // Chi apre il sito in una scheda di sfondo (un ctrl+clic) si vede rifiutare
   // il play: il filmato resta fermo sul poster anche quando la scheda torna in
   // primo piano. Il tentativo va quindi ripetuto al rientro.
-  // Il video parte anche con "Riduci movimento" attiva. Scelta presa il 3 agosto
-  // 2026 dopo averlo visto restare fermo su un iPhone che aveva quell'opzione:
-  // la hero cambia slide comunque, quindi fermare il solo filmato non riduceva
-  // il movimento, nascondeva soltanto il video. Il resto delle animazioni resta
-  // governato da `reducedMotion` e dalla media query nel CSS.
+  // I video partono anche con "Riduci movimento" attiva. Scelta presa il 3
+  // agosto 2026 dopo averlo visto restare fermo su un iPhone che aveva
+  // quell'opzione: la hero cambia slide comunque, quindi fermare il filmato non
+  // riduceva il movimento, nascondeva soltanto il video. Il resto delle
+  // animazioni resta governato da `reducedMotion` e dalla media query nel CSS.
   const avviaVideo = () => {
-    if (!heroVideo || !heroVideo.src) return;
-    if (heroVideo.classList.contains('active') && heroVideo.paused) {
-      // Safari su iOS non guarda l'attributo `muted` scritto nell'HTML: guarda
-      // la proprieta' al momento del play. Senza questa riga considera il video
-      // sonoro e rifiuta l'avvio automatico.
-      heroVideo.muted = true;
-      heroVideo.play().catch(() => {});
-    }
+    const inScena = heroVideos.find((v) => v.classList.contains('active'));
+    if (!inScena || !inScena.src || !inScena.paused) return;
+    // Safari su iOS non guarda l'attributo `muted` scritto nell'HTML: guarda
+    // la proprieta' al momento del play. Senza questa riga considera il video
+    // sonoro e rifiuta l'avvio automatico.
+    inScena.muted = true;
+    inScena.play().catch(() => {});
   };
   document.addEventListener('visibilitychange', () => {
     if (!document.hidden) avviaVideo();
   });
   // Ultima rete: in risparmio energetico iOS blocca l'avvio comunque, e l'unico
-  // sblocco e' un gesto dell'utente. I listener restano finche' il video non ha
-  // girato davvero: con `once` si consumerebbero anche su un tocco arrivato
-  // mentre in scena c'e' una foto, cioe' proprio quando non servono a niente.
-  if (heroVideo) {
+  // sblocco e' un gesto dell'utente. I listener restano finche' un video non ha
+  // girato davvero: con `once` si consumerebbero al primo tocco, che puo'
+  // arrivare mentre la scena e' ancora ferma sul poster.
+  if (heroVideos.length) {
     const tocchi = ['pointerdown', 'touchstart', 'keydown'];
     const smetti = () =>
       tocchi.forEach((e) => document.removeEventListener(e, avviaVideo));
     tocchi.forEach((e) =>
       document.addEventListener(e, avviaVideo, { passive: true })
     );
-    heroVideo.addEventListener('playing', smetti, { once: true });
+    heroVideos.forEach((v) => v.addEventListener('playing', smetti, { once: true }));
   }
 
-  // Gli slide sono sovrapposti dentro il viewport: loading="lazy" non li
-  // rimanderebbe. Il src arriva da data-src quando la pagina e' pronta,
-  // cosi' all'apertura si scarica solo il primo.
+  // A pagina pronta si prepara solo la prima slide: le altre tre arrivano piu'
+  // tardi, una alla volta, da prossimaSlide().
   const caricaSlideDifferiti = () => {
-    // Il video nasce senza src: qui riceve il taglio adatto allo schermo e parte.
-    if (heroVideo && !heroVideo.src) {
-      heroVideo.src = window.matchMedia('(max-width: 760px)').matches
-        ? heroVideo.dataset.videoMobile
-        : heroVideo.dataset.videoDesktop;
-      // Su iOS un src assegnato da JS a un elemento nato con preload="none" non
-      // viene raccolto da solo: senza load() esplicita il play parte a vuoto.
-      heroVideo.load();
-      avviaVideo();
-    }
-    heroImages.forEach((img) => {
-      if (img.dataset.src) {
-        // Va tolto prima del src: assegnarlo a un'immagine nata lazy e senza
-        // src non fa ripartire il caricamento, il browser l'ha gia' valutata.
-        img.loading = 'eager';
-        // Prima il srcset: e' quello che decide il file da scaricare. Se
-        // arrivasse dopo il src, il browser partirebbe con il JPG piccolo e
-        // poi cambierebbe idea, scaricando due volte.
-        if (img.dataset.srcset) {
-          img.srcset = img.dataset.srcset;
-          delete img.dataset.srcset;
-        }
-        img.src = img.dataset.src;
-        delete img.dataset.src;
-      }
-    });
+    preparaVideo(heroImages[0]);
+    avviaVideo();
   };
   if (document.readyState === 'complete') caricaSlideDifferiti();
   else window.addEventListener('load', caricaSlideDifferiti, { once: true });
   if (heroImages.length > 1) {
     let heroActive = 0;
-    // Le foto restano 5 secondi; il video il tempo di finire, altrimenti si
-    // vedrebbe solo il suo primo terzo. Serve un setTimeout ricorsivo: con
-    // setInterval la durata sarebbe una sola per tutte le slide.
-    const durataSlide = (el) => (el === heroVideo ? 13000 : 5000);
-    const prossimaSlide = () => {
-      if (document.hidden) {
-        setTimeout(prossimaSlide, 1000);
+    // Ogni slide resta in scena quanto dura il suo filmato, altrimenti se ne
+    // vedrebbe solo un pezzo. La durata vera si conosce solo a metadati letti:
+    // finche' non ci sono vale il valore di ripiego. Serve un setTimeout
+    // ricorsivo, con setInterval la durata sarebbe una sola per tutte.
+    const RIPIEGO = 10000;
+    const durataSlide = (el) =>
+      el.tagName === 'VIDEO' && el.duration > 0 ? el.duration * 1000 : RIPIEGO;
+    // I quattro filmati non durano uguale (il primo 13 secondi, gli altri 10) e
+    // la durata vera si legge solo a metadati arrivati. Programmare il cambio
+    // subito significherebbe tagliare il primo video di tre secondi: qui si
+    // aspetta il dato, ricontrollando, e si ripiega solo se non arriva.
+    let attesa;
+    const pianifica = (el, tentativi = 0) => {
+      clearTimeout(attesa);
+      if (el.tagName === 'VIDEO' && !(el.duration > 0) && tentativi < 25) {
+        attesa = setTimeout(() => pianifica(el, tentativi + 1), 200);
         return;
       }
-      heroImages[heroActive].classList.remove('active');
+      attesa = setTimeout(prossimaSlide, durataSlide(el));
+    };
+    const prossimaSlide = () => {
+      if (document.hidden) {
+        attesa = setTimeout(prossimaSlide, 1000);
+        return;
+      }
+      const uscente = heroImages[heroActive];
+      uscente.classList.remove('active');
       // Fuori scena il video non va lasciato girare: consumerebbe batteria per
       // fotogrammi che nessuno vede.
-      if (heroImages[heroActive] === heroVideo) heroVideo.pause();
+      if (uscente.tagName === 'VIDEO') uscente.pause();
       heroActive = (heroActive + 1) % heroImages.length;
-      heroImages[heroActive].classList.add('active');
-      if (heroImages[heroActive] === heroVideo) {
-        heroVideo.currentTime = 0;
+      const entrante = heroImages[heroActive];
+      entrante.classList.add('active');
+      if (entrante.tagName === 'VIDEO') {
+        entrante.currentTime = 0;
         avviaVideo();
       }
-      setTimeout(prossimaSlide, durataSlide(heroImages[heroActive]));
+      // La slide dopo la prossima si prepara adesso: ha tutto il tempo in cui
+      // resta in scena questa per scaricarsi.
+      preparaVideo(heroImages[(heroActive + 1) % heroImages.length]);
+      pianifica(entrante);
     };
-    setTimeout(prossimaSlide, durataSlide(heroImages[0]));
+    // La seconda slide non aspetta il cambio, ma nemmeno parte insieme alla
+    // prima: su una connessione lenta si contenderebbero la banda proprio
+    // mentre il primo filmato deve partire. Si mette in coda quando il primo
+    // ha abbastanza buffer, con una rete di sicurezza se quell'evento non
+    // arriva mai (succede se il file resta fermo o la scheda e' in sottofondo).
+    const seconda = () => preparaVideo(heroImages[1]);
+    heroImages[0].addEventListener?.('canplaythrough', seconda, { once: true });
+    setTimeout(seconda, 6000);
+    pianifica(heroImages[0]);
   }
 
   const revealObserver = new IntersectionObserver((entries) => {
