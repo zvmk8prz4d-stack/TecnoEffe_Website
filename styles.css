@@ -64,7 +64,13 @@ em { font-weight: 400; }
 .site-header.scrolled::before { opacity: 0; }
 .brand { position: relative; display: flex; align-items: center; gap: 16px; min-width: 300px; }
 .brand > .brand-logo-viewport { position: relative; z-index: 1; display: block; width: 260px; flex: 0 0 auto; transition: width .45s var(--ease); }
-.brand-logo-viewport .brand-logo { display: block; width: 100%; max-width: none; height: auto; object-fit: initial; filter: none; }
+/* L'alone scuro sotto al logo e' la stessa cosa che gia' hanno titolo, occhiello e
+   voci del menu: serve a staccare le lettere dalla trama della foto, non a leggersi
+   come ombra. Senza, la "Effe" verde spariva su tre hero su quattro - il fondo
+   dietro alla scritta ha luminanza 0,16 e il verde pure. Si spegne a barra opaca,
+   dove sotto non c'e' piu' una foto. */
+.brand-logo-viewport .brand-logo { display: block; width: 100%; max-width: none; height: auto; object-fit: initial; filter: drop-shadow(0 1px 2px rgba(3,18,13,.55)) drop-shadow(0 2px 18px rgba(3,18,13,.55)); }
+.site-header.scrolled .brand-logo-viewport .brand-logo { filter: none; }
 .site-header.scrolled .brand-logo-viewport { width: 242px; }
 .site-header nav { display: flex; align-items: center; gap: 31px; }
 .site-header nav > a:not(.nav-cta) { position: relative; font-size: 12px; font-weight: 500; letter-spacing: .17em; text-transform: uppercase; }
