@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://zvmk8prz4d-stack.github.io/TecnoEffe_Website/sitemap.xml
